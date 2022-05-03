@@ -10,7 +10,7 @@ const Car = mongoose.model("Car+");
 
 //Connect
 mongoose.connect(
-  "mongodb+srv://User4:user123@clustercars.8e3yd.mongodb.net/ClusterCars?retryWrites=true&w=majority",
+  "mongodb+srv://cordarjovana:cordarjovana@clustercars.vjfk3.mongodb.net/ClusterCars?myFirstDatabase",
   () => {
     console.log("Database is connected!");
   }

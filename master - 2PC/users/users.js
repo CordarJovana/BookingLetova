@@ -13,7 +13,7 @@ app.post("/users", (req, res) => {
 
   db.promise()
     .query(
-      `INSERT INTO Users VALUES('NULL', ${newUser.UserId}, ${newUser.HotelId}, '${newUser.CarId}', ${newUser.FlightId})`
+      `INSERT INTO Users VALUES(NULL, ${newUser.UserId}, ${newUser.HotelId}, '${newUser.CarId}', ${newUser.FlightId})`
     )
     .then(() => {
       // console.log("User created");
@@ -54,16 +54,23 @@ app.post("/users/:id/booking/:hotel/:car/:flight", async (req, res) => {
       if (hotelResponse.data) {
         return axios.put(`http://127.0.0.1:4545/cars/${CarId}?prepared=true`);
       } else {
-        throw new Error("This hotel is waitng to be processed");
+        throw new Error("This hotel is waiting to be processed");
       }
     })
     .then((carResult) => {
       if (carResult.data) {
+        return axios.put(`http://127.0.0.1:4567/flights/${FlightId}?prepared=true`);
+      } else {
+        throw new Error("This car is waiting to be processed");
+      }
+    })
+    .then((flightResult) => {
+      if (flightResult.data) {
         return axios.post(`http://localhost:4444/users`, null, {
           params: { UserId, HotelId, CarId, FlightId },
         });
       } else {
-        throw new Error("This car is waitng to be processed");
+        throw new Error("This flight is waiting to be processed");
       }
     })
     .then(() => {
@@ -75,8 +82,12 @@ app.post("/users/:id/booking/:hotel/:car/:flight", async (req, res) => {
     })
     .then((hotel) => {
       booking.hotel = hotel.data[0];
+      return axios.get(`http://localhost:4567/flights/${FlightId}`);
+    })
+    .then((flight) => {
+      booking.flight = flight.data[0];
       booking.pricePerDay =
-        booking.car.rentalPricePerDay + booking.hotel.pricePerDay;
+        booking.car.rentalPricePerDay + booking.hotel.pricePerDay + booking.flight.Price;
       res.send(booking);
     })
     .catch((err) => {
