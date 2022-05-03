@@ -80,6 +80,15 @@ app.post("/users/:id/booking/:hotel/:car/:flight", (req, res) => {
       return wait("car");
     })
     .then((promiseResult) => {
+      if (promiseResult) {
+        return axios.get(`http://localhost:3333/flights/${FlightId}`);
+      }
+    })
+    .then((flightResponse) => {
+      booking.flight = flightResponse.data;
+      return wait("flight");
+    })
+    .then((promiseResult) => {
       if (promiseResult) res.send(booking);
     })
     .catch((err) => {
