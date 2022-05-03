@@ -12,7 +12,7 @@ app.post("/users", (req, res) => {
   let newUser = req.query;
   db.promise()
     .query(
-      `INSERT INTO Users VALUES('NULL', ${newUser.UserId}, ${newUser.HotelId}, '${newUser.CarId}', ${newUser.FlightId})`
+      `INSERT INTO Users VALUES(NULL, ${newUser.UserId}, ${newUser.HotelId}, '${newUser.CarId}', ${newUser.FlightId})`
     )
     .then(() => {
       res.status(201).send({ msg: "Created user" });
@@ -75,17 +75,17 @@ app.post("/users/:id/booking/:hotel/:car/:flight", (req, res) => {
     })
     .then((carResponse) => {
       booking.car = carResponse.data;
-      booking.pricePerDay =
-        booking.car.rentalPricePerDay + booking.hotel.pricePerDay;
       return wait("car");
     })
     .then((promiseResult) => {
       if (promiseResult) {
-        return axios.get(`http://localhost:3333/flights/${FlightId}`);
+        return axios.get(`http://localhost:7777/flights/${FlightId}`);
       }
     })
     .then((flightResponse) => {
       booking.flight = flightResponse.data;
+      booking.pricePerDay =
+        booking.car.rentalPricePerDay + booking.hotel.pricePerDay + booking.flight.Price;
       return wait("flight");
     })
     .then((promiseResult) => {
