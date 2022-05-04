@@ -10,7 +10,7 @@ app.post("/flights", (req, res) => {
   const prepared = req.query.prepared;
   db.promise()
     .query(
-      `INSERT INTO flights VALUES(NULL, '${newFlight.FlightNumber}', ${newFlight.NumberOfPassengers}, ${newFlight.Duration}, '${newFlight.Departure}', '${newFlight.Destination}', ${newFlight.Price}, ${newFlight.prepared})`
+      `INSERT INTO flights VALUES(NULL, '${newFlight.FlightNumber}', ${newFlight.NumberOfPassengers}, ${newFlight.Duration}, '${newFlight.Departure}', '${newFlight.Destination}', ${newFlight.Price}, ${newFlight.Prepared})`
     )
     .then(() => {
       console.log("Flight created");
@@ -36,7 +36,7 @@ app.get("/flights/:id", async (req, res) => {
 app.put("/flights/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const prep = req.query.prepared;
+    const prep = req.query.Prepared;
     const result = await db.promise().query(`
       UPDATE flights
       SET Prepared = ${prep}
